@@ -1,0 +1,39 @@
+# Simple test configuration for pane
+
+# Session name
+session: "test_session"
+
+# Root directory for all project paths
+root: "/tmp/test"
+
+# Default layout to apply to windows (if not specified)
+defaultLayout: "dev"
+
+# Layout configurations referring to Elixir template modules
+layouts:
+  dev:
+    template: "TopSplitBottom"
+    panes:
+      top: "nvim ."
+      bottomLeft: "zsh"
+      bottomRight: "zsh"
+  
+  vertical:
+    template: "SplitVertical" 
+    panes:
+      left: "nvim ."
+      right: "zsh"
+  
+  single:
+    template: "Single"
+    panes:
+      main: "{command}"
+
+# Windows to create in the tmux session
+windows:
+  - path: project1
+    layout: dev
+  - path: project2 
+    layout: "vertical"
+  - command: "echo test"
+    layout: single

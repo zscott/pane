@@ -1,0 +1,57 @@
+# Complex test configuration for pane with all layout types
+
+# Session name
+session: "complex_test"
+
+# Root directory for all project paths
+root: "/tmp/test"
+
+# Default layout to apply to windows (if not specified)
+defaultLayout: "dev"
+
+# Layout configurations referring to Elixir template modules
+layouts:
+  dev:
+    template: "TopSplitBottom"
+    panes:
+      top: "nvim ."
+      bottomLeft: "zsh"
+      bottomRight: "zsh"
+  
+  vertical:
+    template: "SplitVertical" 
+    panes:
+      left: "nvim ."
+      right: "zsh"
+  
+  aiCoding:
+    template: "SplitVertical" 
+    panes:
+      left: "nvim ."
+      right: "claude code"
+      
+  complex:
+    template: "TopSplitBottom"
+    panes:
+      top: "nvim -c NvimTreeToggle"
+      bottomLeft: "npm run test:watch"
+      bottomRight: "git status"
+  
+  single:
+    template: "Single"
+    panes:
+      main: "{command}"
+
+# Windows to create in the tmux session
+windows:
+  - path: project1
+    layout: dev
+    label: "editor"
+  - path: project2
+    layout: "vertical"
+  - path: project3
+    layout: "aiCoding"
+  - path: project4
+    layout: "complex"
+  - command: "htop"
+    layout: single

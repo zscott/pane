@@ -1,0 +1,34 @@
+# Test configuration for pane shell tests
+session: "test-session"
+root: "~/projects/"
+
+# Default layout to apply to windows
+defaultLayout: "dev"
+
+layouts:
+  dev:
+    template: "TopSplitBottom"
+    panes:
+      top: "nvim"
+      bottomLeft: "zsh"
+      bottomRight: "zsh"
+    shell: "zsh"
+  
+  vertical:
+    template: "SplitVertical" 
+    panes:
+      left: "nvim"
+      right: "zsh"
+  
+  single:
+    template: "Single"
+    panes:
+      main: "{command}"
+
+windows:
+  - path: test-project
+    layout: dev
+  - path: test-docs 
+    layout: "vertical"
+  - command: "echo test"
+    layout: single

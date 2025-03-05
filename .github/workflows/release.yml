@@ -1,0 +1,109 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: '1.17'
+          otp-version: '26'
+          
+      - name: Install dependencies
+        run: |
+          mix local.hex --force
+          mix deps.get
+          
+      - name: Compile
+        run: mix compile
+        
+      - name: Build escript
+        run: mix escript.build
+      
+      - name: Verify executable
+        run: |
+          if [ ! -f "pane" ]; then
+            echo "Error: Failed to build escript"
+            exit 1
+          fi
+          if ! head -n 1 "pane" | grep -q "escript"; then
+            echo "Error: Generated escript is corrupted"
+            exit 1
+          fi
+      
+      - name: Create release package
+        run: |
+          echo "Creating release package structure..."
+          mkdir -p release/pane/bin
+          mkdir -p release/pane/config
+          
+          # Copy core files
+          echo "Copying core files..."
+          cp scripts/pane.exs release/pane/
+          cp scripts/pane.sh release/pane/
+          cp -R lib release/pane/
+          cp pane release/pane/bin/
+          cp config/default.yaml release/pane/config/
+          cp scripts/uninstall.sh release/pane/bin/uninstall
+          
+          # Set executable permissions
+          echo "Setting permissions..."
+          chmod +x release/pane/pane.exs
+          chmod +x release/pane/pane.sh
+          chmod +x release/pane/bin/pane
+          chmod +x release/pane/bin/uninstall
+          
+          # Create tarball
+          echo "Creating tarball..."
+          cd release && tar -czf ../pane.tar.gz pane
+          
+          # Verify tarball
+          cd ..
+          if [ ! -s pane.tar.gz ]; then
+            echo "Error: Created tarball is empty"
+            exit 1
+          fi
+          
+          echo "Tarball created successfully: $(du -h pane.tar.gz)"
+          ls -la pane.tar.gz
+          
+      - name: Extract version
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: pane.tar.gz
+          repository: ${{ github.repository }}
+          name: Pane v${{ steps.get_version.outputs.VERSION }}
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          body: |
+            # Pane v${{ steps.get_version.outputs.VERSION }}
+            
+            Tmux Session Manager
+            
+            ## Installation
+            
+            ```bash
+            curl -sSL https://raw.githubusercontent.com/${{ github.repository }}/main/setup.sh | bash
+            ```
+            
+            Or download and extract the release manually.
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: true

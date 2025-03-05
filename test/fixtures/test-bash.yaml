@@ -1,0 +1,18 @@
+# Test configuration to demonstrate bash usage
+session: "bash-test"
+root: "~/projects/"
+
+# Default layout to apply to windows
+defaultLayout: "bashShell"
+
+layouts:
+  bashShell:
+    template: "SplitVertical"
+    shell: "/bin/bash"  # Explicitly use bash for new panes
+    panes:
+      left: "nvim"
+      right: "/bin/bash"  # Use full path to ensure bash is used
+
+windows:
+  - path: website
+    layout: bashShell
