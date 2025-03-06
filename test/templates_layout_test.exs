@@ -7,11 +7,13 @@ defmodule Pane.TemplatesLayoutTest do
   alias Pane.Layout.Templates.TopSplitBottom
   alias Pane.Layout.Templates.SplitVertical
   alias Pane.Layout.Templates.Single
+  alias Pane.Layout.Templates.Quad
 
   test "template modules can be found by name" do
     assert Template.get_template_module("TopSplitBottom") == TopSplitBottom
     assert Template.get_template_module("SplitVertical") == SplitVertical
     assert Template.get_template_module("Single") == Single
+    assert Template.get_template_module("Quad") == Quad
   end
 
   test "template module listings work" do
@@ -19,6 +21,7 @@ defmodule Pane.TemplatesLayoutTest do
     assert TopSplitBottom in modules
     assert SplitVertical in modules
     assert Single in modules
+    assert Quad in modules
   end
 
   test "template names can be listed" do
@@ -26,6 +29,7 @@ defmodule Pane.TemplatesLayoutTest do
     assert "TopSplitBottom" in names
     assert "SplitVertical" in names
     assert "Single" in names
+    assert "Quad" in names
   end
 
   test "TopSplitBottom template generates correct commands" do
@@ -78,6 +82,37 @@ defmodule Pane.TemplatesLayoutTest do
     # Check pane targets
     assert pane_targets.main == "session:0.0"
   end
+  
+  test "Quad template generates correct commands" do
+    {commands, pane_targets} = Quad.apply("session:0", "/home/user/project", %{})
+    
+    # Check generated commands
+    assert length(commands) == 4
+    
+    # First split: vertical to create top and bottom halves
+    assert Enum.at(commands, 0) =~ "tmux split-window -v"
+    assert Enum.at(commands, 0) =~ "-p 50"
+    assert Enum.at(commands, 0) =~ "-t \"session:0.0\""
+    
+    # Second split: horizontal to split top half into topLeft and topRight
+    assert Enum.at(commands, 1) =~ "tmux split-window -h"
+    assert Enum.at(commands, 1) =~ "-p 50"
+    assert Enum.at(commands, 1) =~ "-t \"session:0.0\""
+    
+    # Third split: horizontal to split bottom half into bottomLeft and bottomRight
+    assert Enum.at(commands, 2) =~ "tmux split-window -h"
+    assert Enum.at(commands, 2) =~ "-p 50"
+    assert Enum.at(commands, 2) =~ "-t \"session:0.1\""
+    
+    # Select top left pane at the end
+    assert Enum.at(commands, 3) =~ "tmux select-pane -t \"session:0.0\""
+    
+    # Check pane targets
+    assert pane_targets.topLeft == "session:0.0"
+    assert pane_targets.topRight == "session:0.2"
+    assert pane_targets.bottomLeft == "session:0.1"
+    assert pane_targets.bottomRight == "session:0.3"
+  end
 
   test "Template.apply generates combined commands" do
     window_target = "session:0"
@@ -98,6 +133,28 @@ defmodule Pane.TemplatesLayoutTest do
     assert Enum.any?(cmds, &(&1 =~ "tmux send-keys" && &1 =~ "nvim ."))
     assert Enum.any?(cmds, &(&1 =~ "tmux send-keys" && &1 =~ "ls -la"))
     assert Enum.any?(cmds, &(&1 =~ "tmux send-keys" && &1 =~ "git status"))
+  end
+  
+  test "Template.apply generates commands for Quad layout" do
+    window_target = "session:0"
+    cwd = "/home/user/project"
+    commands = %{
+      topLeft: "nvim .",
+      topRight: "ls -la",
+      bottomLeft: "git status",
+      bottomRight: "htop"
+    }
+    
+    cmds = Template.apply("Quad", window_target, cwd, commands)
+    
+    # Check for layout creation commands - we should have splits and commands
+    assert length(cmds) == 8  # 4 splits + 4 commands
+    
+    # Check for command execution
+    assert Enum.any?(cmds, &(&1 =~ "tmux send-keys" && &1 =~ "nvim ."))
+    assert Enum.any?(cmds, &(&1 =~ "tmux send-keys" && &1 =~ "ls -la"))
+    assert Enum.any?(cmds, &(&1 =~ "tmux send-keys" && &1 =~ "git status"))
+    assert Enum.any?(cmds, &(&1 =~ "tmux send-keys" && &1 =~ "htop"))
   end
 
   test "Layout.extract_commands handles different command formats" do

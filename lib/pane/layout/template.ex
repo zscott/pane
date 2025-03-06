@@ -85,7 +85,8 @@ defmodule Pane.Layout.Template do
     [
       Pane.Layout.Templates.TopSplitBottom,
       Pane.Layout.Templates.SplitVertical,
-      Pane.Layout.Templates.Single
+      Pane.Layout.Templates.Single,
+      Pane.Layout.Templates.Quad
     ]
   end
 
