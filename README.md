@@ -30,6 +30,7 @@ Pane is built around these main modules:
   - **Single**: A single fullscreen pane
   - **SplitVertical**: Two equal vertical panes
   - **TopSplitBottom**: Large top pane (60%) with two equal bottom panes (40%)
+  - **Quad**: Four equal panes arranged in a 2x2 grid
 
 ## Installation
 
@@ -271,6 +272,15 @@ Pane names:
 - bottomLeft
 - bottomRight
 
+#### Quad (Quad)
+A layout with four equal panes arranged in a 2x2 grid.
+
+Pane names:
+- topLeft
+- topRight
+- bottomLeft
+- bottomRight
+
 ### Advanced Configuration Example
 
 ```yaml
@@ -294,6 +304,14 @@ layouts:
     template: "Single"
     commands:
       - "{command}"            # Uses the window's command
+      
+  quadDev:
+    template: "Quad"
+    commands:
+      - "cd $DIR && nvim"      # topLeft pane
+      - "cd $DIR && npm test"  # topRight pane
+      - "cd $DIR && npm run build" # bottomLeft pane
+      - "cd $DIR && git status" # bottomRight pane
 ```
 
 ## Development
