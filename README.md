@@ -1,6 +1,6 @@
 # Pane
 
-A simple tmux session manager written in Elixir. Pane creates a consistent development environment across multiple project directories.
+A simple tmux session manager available in both Elixir and Node.js implementations. Pane creates a consistent development environment across multiple project directories.
 
 ## Features
 
@@ -12,6 +12,7 @@ A simple tmux session manager written in Elixir. Pane creates a consistent devel
 - Enhanced preview mode with detailed diagnostic information
 - Supports multiple pane layouts for different workflows
 - Robust terminal detection for various terminal environments
+- Available in both Elixir and Node.js implementations
 
 ## Architecture
 
@@ -35,18 +36,20 @@ Pane is built around these main modules:
 ### Quick Install (Recommended)
 
 ```bash
-# Install using curl
-curl -sSL https://raw.githubusercontent.com/zscott/pane/main/scripts/setup.sh | bash
+# Install both implementations using curl
+curl -sSL https://raw.githubusercontent.com/zscott/pane/main/scripts/setup-combined.sh | bash
 ```
 
 This will:
-1. Install pane to `/usr/local/pane`
-2. Create a symbolic link in `/usr/local/bin/pane`
-3. Add an uninstaller at `/usr/local/pane/bin/uninstall`
+1. Install the Elixir version to `/usr/local/pane`
+2. Install the Node.js version to `/usr/local/pane-js`
+3. Install the wrapper to `/usr/local/pane-wrapper`
+4. Create a symbolic link in `/usr/local/bin/pane`
+5. Add an uninstaller at `/usr/local/pane-wrapper/uninstall`
 
 To uninstall:
 ```bash
-/usr/local/pane/bin/uninstall
+/usr/local/pane-wrapper/uninstall
 ```
 
 ### Manual Installation
@@ -56,15 +59,32 @@ To uninstall:
 git clone <repo-url>
 cd pane
 
-# Install dependencies
+# For Elixir version:
 mix deps.get
-
-# Build the executable
 mix escript.build
 
-# Run the setup script (will prompt for sudo password if needed)
-./setup.sh
+# For Node.js version:
+cd nodejs
+npm install
+
+# Run the combined setup script (will prompt for sudo password if needed)
+cd ..
+./scripts/setup-combined.sh
 ```
+
+### Choosing the Implementation
+
+By default, Pane uses the Node.js implementation. To use the Elixir implementation:
+
+```bash
+# Use the default Node.js implementation
+pane
+
+# Use the Elixir implementation
+pane --elixir
+```
+
+Each implementation will display which version is being used when executed.
 
 ## Project Structure
 

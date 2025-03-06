@@ -4,6 +4,9 @@ defmodule Pane.CLI do
   """
 
   def main(args) do
+    # Print a small indicator this is the Elixir version
+    IO.puts("[pane] Elixir implementation")
+    
     # Fall back to native OptionParser for robustness with strict validation
     {opts, invalid, unknown} =
       OptionParser.parse(args,

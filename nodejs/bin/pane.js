@@ -12,6 +12,9 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const tmp = require('tmp');
 
+// Print a small indicator this is the Node.js version
+console.log('[pane] Node.js implementation');
+
 // Define CLI options
 program
   .name('pane')
@@ -22,6 +25,7 @@ program
   .option('-a, --attach', 'Directly attach to the session (run this from terminal)')
   .option('--no-attach', 'Create the session but don\'t automatically attach to it')
   .option('--print-session', 'Print the session name from the config and exit')
+  .option('--elixir', 'Use the Elixir implementation instead (through wrapper)')
   .version('0.1.0');
 
 // Parse command line arguments
