@@ -37,11 +37,8 @@ Pane is built around these main modules:
 ### Quick Install (Recommended)
 
 ```bash
-# Install both implementations (downloads the installer script first, then runs with sudo)
-curl -sSL https://raw.githubusercontent.com/zscott/pane/main/scripts/setup-combined.sh -o pane-setup.sh
-chmod +x pane-setup.sh
-sudo ./pane-setup.sh
-rm pane-setup.sh  # Clean up the temporary script
+# Install using curl
+curl -sSL https://raw.githubusercontent.com/zscott/pane/main/scripts/setup.sh | bash
 ```
 
 This will:
@@ -53,7 +50,7 @@ This will:
 
 To uninstall:
 ```bash
-sudo /usr/local/pane-wrapper/uninstall
+/usr/local/pane-wrapper/uninstall
 ```
 
 ### Manual Installation
@@ -71,9 +68,9 @@ mix escript.build
 cd nodejs
 npm install
 
-# Run the combined setup script (requires sudo privileges)
+# Run the combined setup script (will prompt for sudo password if needed)
 cd ..
-sudo ./scripts/setup-combined.sh
+./scripts/setup-combined.sh
 ```
 
 ### Choosing the Implementation
