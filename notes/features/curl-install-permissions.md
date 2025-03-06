@@ -24,6 +24,15 @@ Please run: sudo bash
 2. Modify the setup script to use sudo internally for operations that require it
 3. Change the installation directory to one that doesn't require sudo
 4. Add a wrapper script that can re-execute itself with sudo
+5. Use a two-step approach: download the script first, then run it with sudo
 
 ## Selected Approach
-Update the README to use sudo with the curl command, which is the simplest and most direct solution.
+Initially, I chose to update the README to use `sudo bash` with the curl pipe command, but this has security implications because it runs unread code with elevated privileges.
+
+After reconsideration, the safer approach is to use the two-step installation process:
+1. Download the script first (so users can inspect it if desired)
+2. Make it executable
+3. Run it with sudo
+4. Clean up afterward
+
+This is more secure and follows the principle of least privilege, only using sudo when necessary.

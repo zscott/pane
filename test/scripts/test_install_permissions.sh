@@ -47,11 +47,18 @@ echo "Test 3: README instructions use sudo for installation"
 
 README_CONTENT=$(cat "$PROJECT_ROOT/README.md")
 
-echo "$README_CONTENT" | grep -q "curl -sSL .* | sudo bash"
+echo "$README_CONTENT" | grep -q "curl -sSL .* -o pane-setup.sh"
 if [ $? -eq 0 ]; then
-  echo "PASS: README uses sudo with curl pipe to bash"
+  echo "PASS: README uses safer download-then-run approach with curl"
 else
-  echo "FAIL: README doesn't use sudo with curl pipe to bash"
+  echo "FAIL: README doesn't use the safer download-then-run approach with curl"
+fi
+
+echo "$README_CONTENT" | grep -q "sudo ./pane-setup.sh"
+if [ $? -eq 0 ]; then
+  echo "PASS: README uses sudo to run the downloaded setup script"
+else
+  echo "FAIL: README doesn't use sudo to run the downloaded setup script"
 fi
 
 echo "$README_CONTENT" | grep -q "sudo ./scripts/setup-combined.sh"

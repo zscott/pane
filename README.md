@@ -37,8 +37,11 @@ Pane is built around these main modules:
 ### Quick Install (Recommended)
 
 ```bash
-# Install both implementations using curl (requires sudo privileges)
-curl -sSL https://raw.githubusercontent.com/zscott/pane/main/scripts/setup-combined.sh | sudo bash
+# Install both implementations (downloads the installer script first, then runs with sudo)
+curl -sSL https://raw.githubusercontent.com/zscott/pane/main/scripts/setup-combined.sh -o pane-setup.sh
+chmod +x pane-setup.sh
+sudo ./pane-setup.sh
+rm pane-setup.sh  # Clean up the temporary script
 ```
 
 This will:
