@@ -2,6 +2,20 @@ defmodule Pane.CLI do
   @moduledoc """
   Command-line interface for Pane.
   """
+  
+  @doc """
+  Determines if the no-attach mode was requested based on command-line options.
+  
+  Returns true if either:
+  - no_attach: true was specified, or
+  - attach: false was specified
+  
+  This handles the two ways a user can request not to attach to the session.
+  """
+  @spec no_attach_requested?(Keyword.t()) :: boolean()
+  def no_attach_requested?(opts) do
+    (opts[:no_attach] == true) or (opts[:attach] == false)
+  end
 
   def main(args) do
     # Print a small indicator this is the Elixir version
@@ -79,9 +93,8 @@ defmodule Pane.CLI do
             # Set preview mode for debug output
             Application.put_env(:pane, :preview_mode, true)
             
-            # Check for no-attach flag (either as no_attach: true or attach: false)
-            no_attach = (opts[:no_attach] == true) or (opts[:attach] == false)
-            if no_attach do
+            # Check for no-attach flag
+            if no_attach_requested?(opts) do
               Application.put_env(:pane, :no_attach, true)
             end
             
@@ -132,9 +145,8 @@ defmodule Pane.CLI do
             # Run in normal mode without preview
             Application.put_env(:pane, :preview_mode, false)
             
-            # Only auto-attach if --no-attach isn't specified (handle both no_attach and !attach cases)
-            no_attach = (opts[:no_attach] == true) or (opts[:attach] == false)
-            auto_attach = not no_attach
+            # Only auto-attach if --no-attach isn't specified
+            auto_attach = not no_attach_requested?(opts)
             
             # Log the auto-attach setting in verbose mode
             if Application.get_env(:pane, :verbose, false) do
