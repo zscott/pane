@@ -1,0 +1,35 @@
+{
+  "name": "pane",
+  "version": "0.1.0",
+  "description": "A tmux session manager for creating consistent development environments",
+  "main": "src/index.js",
+  "bin": {
+    "pane": "bin/pane.js"
+  },
+  "scripts": {
+    "start": "node bin/pane.js",
+    "test": "node test/test_pane.js",
+    "lint": "eslint ."
+  },
+  "keywords": [
+    "tmux",
+    "session",
+    "manager",
+    "development",
+    "environment"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "js-yaml": "^4.1.0",
+    "tmp": "^0.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

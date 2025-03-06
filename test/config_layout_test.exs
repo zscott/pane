@@ -173,4 +173,16 @@ defmodule Pane.ConfigLayoutTest do
     assert Enum.any?(commands, &(&1 =~ "tmux split-window -h"))
     assert Enum.any?(commands, &(&1 =~ "tmux send-keys"))
   end
+
+  test "extracts camelCase keys from config following Kubernetes conventions" do
+    config = Config.load_config("test/fixtures/test-config.yaml")
+    
+    # Test for camelCase keys
+    assert Map.has_key?(config, :defaultLayout)
+    
+    # Check template pane keys
+    dev_layout = Map.get(config.layouts, :dev)
+    assert Map.has_key?(dev_layout.panes, :bottomLeft) 
+    assert Map.has_key?(dev_layout.panes, :bottomRight)
+  end
 end

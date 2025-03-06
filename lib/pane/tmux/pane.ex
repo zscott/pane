@@ -2,6 +2,9 @@ defmodule Pane.Tmux.Pane do
   @moduledoc """
   Functions related to tmux pane management.
   """
+  
+  # Default temporary path as fallback when no working directory is specified
+  @default_tmp_path System.tmp_dir()
 
   @doc """
   Split the window.
@@ -60,6 +63,8 @@ defmodule Pane.Tmux.Pane do
     cmd = if literal, do: cmd ++ ["-l"], else: cmd
     cmd = cmd ++ [~s(-t "#{target}")]
     
+    # Note: Using @default_tmp_path instead of hardcoded "/tmp"
+    
     # If keys include a shell command with arguments, we need to properly format it
     # for tmux send-keys by using multiple arguments
     cmd = 
@@ -67,7 +72,7 @@ defmodule Pane.Tmux.Pane do
         # Special case for nvim . or similar commands with period
         # to ensure the period is sent as a separate key press
         keys =~ ~r/nvim\s+\./ && !test_mode ->
-          default_cwd = System.get_env("PWD") || "/tmp"
+          default_cwd = System.get_env("PWD") || @default_tmp_path
           cmd_cwd = cwd || default_cwd
           cmd ++ [~s("cd #{cmd_cwd} && nvim")]
         
@@ -79,7 +84,7 @@ defmodule Pane.Tmux.Pane do
         # Normal command with spaces
         keys =~ " " && !String.starts_with?(keys, "cd ") && !test_mode ->
           # For commands with spaces, we need special handling
-          default_cwd = System.get_env("PWD") || "/tmp"
+          default_cwd = System.get_env("PWD") || @default_tmp_path
           cmd_cwd = cwd || default_cwd
           
           # For multi-word commands like "claude code", keep them intact

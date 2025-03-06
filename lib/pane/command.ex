@@ -3,6 +3,20 @@ defmodule Pane.Command do
   Command generator for tmux operations.
   """
   alias Pane.Tmux
+  
+  @doc """
+  Extract window options for layout from a window configuration.
+  
+  Returns a map with the command if present, or an empty map otherwise.
+  """
+  @spec get_window_opts(map()) :: map()
+  def get_window_opts(window) do
+    if Map.has_key?(window, :command) do
+      %{command: window.command}
+    else
+      %{}
+    end
+  end
 
   @doc """
   Generate all tmux commands needed for the session, but only print them.
@@ -159,13 +173,8 @@ defmodule Pane.Command do
           # Apply layout to the first window
           window_target = "#{session}:0"
 
-          # Pass window command to layout if available
-          window_opts =
-            if Map.has_key?(window, :command) do
-              %{command: window.command}
-            else
-              %{}
-            end
+          # Get window options for layout
+          window_opts = get_window_opts(window)
 
           # Use the layout system for all layouts
           layout_cmds = Pane.Layout.apply_layout(window_target, full_path, layout_config, window_opts)
@@ -183,13 +192,8 @@ defmodule Pane.Command do
           # Apply layout to this window
           window_target = "#{session}:#{index}"
 
-          # Pass window command to layout if available
-          window_opts =
-            if Map.has_key?(window, :command) do
-              %{command: window.command}
-            else
-              %{}
-            end
+          # Get window options for layout
+          window_opts = get_window_opts(window)
 
           # Use the layout system for all layouts
           layout_cmds = Pane.Layout.apply_layout(window_target, full_path, layout_config, window_opts)
@@ -211,22 +215,12 @@ defmodule Pane.Command do
   @doc """
   Process a template command for command-only windows.
 
-  This replaces the {command} placeholder in the template with the actual command.
+  This sends the command to the first pane (index 0) of the window.
+  All templates use the same approach for command-only windows.
   """
-  def process_template_command(command, layout_config, window_target) do
-    # For command-only windows with the single layout,
-    # we need to send the command to the main pane
-    template = layout_config.template
-
-    case template do
-      "Single" ->
-        Tmux.send_keys(command, target: "#{window_target}.0")
-
-      _ ->
-        # For other layouts, we'd need to determine where to send the command
-        # based on the layout configuration
-        Tmux.send_keys(command, target: "#{window_target}.0")
-    end
+  def process_template_command(command, _layout_config, window_target) do
+    # For all layouts, send the command to the first pane (index 0)
+    Tmux.send_keys(command, target: "#{window_target}.0")
   end
 
   @doc """

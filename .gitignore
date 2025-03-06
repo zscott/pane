@@ -30,3 +30,5 @@ pane-*.tar
 
 # _*
 _*
+
+nodejs/node_modules/
