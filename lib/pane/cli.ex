@@ -31,7 +31,8 @@ defmodule Pane.CLI do
           config: :string,
           verbose: :boolean,
           print_session: :boolean,
-          no_attach: :boolean
+          no_attach: :boolean,
+          elixir: :boolean
         ],
         aliases: [
           p: :preview,
@@ -172,6 +173,7 @@ defmodule Pane.CLI do
       -v, --verbose          Show detailed information during execution
       --no-attach            Create the session but don't automatically attach to it
       --print-session        Print the session name from the config and exit
+      --elixir               Use the Elixir implementation instead of Node.js (default)
       -h, --help             Show this help message
 
     Configuration:
@@ -192,6 +194,7 @@ defmodule Pane.CLI do
       pane --verbose         Show detailed logging during execution
       pane -v -p             Preview with verbose output
       pane --config=my.yaml  Use custom configuration file
+      pane --elixir          Use the Elixir implementation instead of Node.js
     """)
   end
 end
