@@ -1,0 +1,83 @@
+# Default configuration for pane
+# This file installs to ~/.config/pane/default.yaml
+
+# Session name
+session: "pane-default"
+
+# Root directory for all project paths
+root: "~/projects/"
+
+# Default layout to apply to windows (if not specified)
+defaultLayout: "dev"
+
+# Layout configurations referring to template modules
+layouts:
+  dev:
+    template: "TopSplitBottom"
+    panes:
+      top: "nvim"
+      bottomLeft: "zsh"   # Can be changed to "bash" if preferred
+      bottomRight: "zsh"  # Can be changed to "bash" if preferred
+    # Set shell for all new panes
+    shell: "zsh"
+  
+  devLargeEditor:
+    template: "TopSplitBottom"
+    panes:
+      top: "nvim"
+      bottomLeft: "zsh"
+      bottomRight: "zsh"
+  
+  aiCoding:
+    template: "SplitVertical" 
+    panes:
+      left: "nvim"
+      right: "claude"
+      
+  bashShell:
+    template: "SplitVertical"
+    shell: "/bin/bash"  # Explicitly use bash instead of zsh
+    panes:
+      left: "nvim"
+      right: "/bin/bash"  # Use full path to ensure bash is used
+  
+  single:
+    template: "Single"
+    panes:
+      main: "{command}"
+
+# Windows to create in the tmux session
+windows:
+  # Path is relative to root
+  # Label is optional; if not provided, uses the last part of the path
+  # Command is optional; if provided, will be run in the window
+  # Layout is optional; if not provided, uses defaultLayout
+  - path: website
+    layout: dev
+  - path: public-docs
+    layout: "aiCoding"
+    
+  # Example of using explicit bash shell
+  #- path: public-docs
+  #  layout: "bashShell"
+  - path: portal
+    layout: devLargeEditor
+  - path: backend
+    label: backend
+    layout: dev
+  - path: plugin-examples
+    layout: dev
+  - path: twin-dashboard
+    label: dashboard
+    layout: "aiCoding"
+  - path: trust-framework
+    layout: dev
+  - path: gitops
+    layout: dev
+  - path: argocd-customer-nodes
+    label: customer-nodes
+    layout: dev
+  - path: charts
+    layout: dev
+  - command: k9s
+    layout: single
