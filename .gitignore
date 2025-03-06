@@ -30,3 +30,6 @@ pane-*.tar
 
 # _*
 _*
+
+/.claude
+
