@@ -78,6 +78,13 @@ cat > "/usr/local/pane-wrapper/uninstall" << 'EOF'
 #!/bin/bash
 # Uninstaller for Pane (combined version)
 
+# Check for root/sudo access
+if [ ! -w "/usr/local" ]; then
+  echo -e "\033[0;31mThis script requires sudo privileges to uninstall from /usr/local\033[0m"
+  echo "Please run: sudo $0"
+  exit 1
+fi
+
 echo "Uninstalling Pane (combined version)..."
 rm -f /usr/local/bin/pane
 rm -rf /usr/local/pane

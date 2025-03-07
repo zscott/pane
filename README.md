@@ -37,8 +37,8 @@ Pane is built around these main modules:
 ### Quick Install (Recommended)
 
 ```bash
-# Install both implementations using curl
-curl -sSL https://raw.githubusercontent.com/zscott/pane/main/scripts/setup-combined.sh | bash
+# Install using curl
+curl -sSL https://raw.githubusercontent.com/zscott/pane/main/scripts/setup.sh | bash
 ```
 
 This will:
